@@ -1,6 +1,6 @@
 import unittest
 import uuid
-from pynamodb_tables import *
+from tests.pynamodb_tables import *
 from datetime import datetime, timezone
 
 

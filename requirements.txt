@@ -1,1 +1,3 @@
 constructs~=10.4.2
+pynamodb~=6.0.2
+aws-cdk-lib~=2.191.0

@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Optional, Tuple, Iterator
+from typing import Optional, Tuple, Iterator, Type
 
 import aws_cdk.aws_dynamodb as dynamodb
 from aws_cdk import Tags
@@ -27,7 +27,7 @@ class PynamoDBTable(dynamodb.Table):
         scope: Construct,
         id: str,
         *,
-        pynamodb_model: "pynamodb.models.Model",
+        pynamodb_model: Type["pynamodb.models.Model"],
         auto_add_index: bool = True,
         auto_add_tags: bool = True,
         override_default_tag_priority: Optional[int] = None,
@@ -58,6 +58,8 @@ class PynamoDBTable(dynamodb.Table):
         tags = None
 
         schema = dict()
+        if hasattr(meta, "table_name"):
+            schema["table_name"] = meta.table_name
         if hasattr(meta, "read_capacity_units"):
             schema["read_capacity"] = meta.read_capacity_units
         if hasattr(meta, "write_capacity_units"):
@@ -115,14 +117,14 @@ class PynamoDBTable(dynamodb.Table):
                 name=attribute.attr_name,
                 type=dynamodb.AttributeType(dynamodb_attr_type),
             )
-        return
+        return None
 
     @classmethod
     def from_pynamodb_model(
         cls,
         scope: Construct,
         *,
-        pynamodb_model: "pynamodb.models.Model",
+        pynamodb_model: Type["pynamodb.models.Model"],
         billing_mode: Optional[dynamodb.BillingMode] = None,
         read_capacity: Optional[int] = None,
         write_capacity: Optional[int] = None,
